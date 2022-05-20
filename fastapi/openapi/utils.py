@@ -51,10 +51,11 @@ validation_error_response_definition = {
         "detail": {
             "title": "Detail",
             "type": "array",
-            "items": {"$ref": REF_PREFIX + "ValidationError"},
+            "items": {"$ref": f"{REF_PREFIX}ValidationError"},
         }
     },
 }
+
 
 status_code_ranges: Dict[str, str] = {
     "1XX": "Information",
@@ -146,9 +147,7 @@ def generate_operation_id(*, route: routing.APIRoute, method: str) -> str:
 
 
 def generate_operation_summary(*, route: routing.APIRoute, method: str) -> str:
-    if route.summary:
-        return route.summary
-    return route.name.replace("_", " ").title()
+    return route.summary or route.name.replace("_", " ").title()
 
 
 def get_openapi_operation_metadata(

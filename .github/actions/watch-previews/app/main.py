@@ -67,18 +67,19 @@ if __name__ == "__main__":
         commit = last_commit.commit.sha
         logging.info(f"Last commit: {commit}")
         message = get_message(commit)
-        notified = False
-        for pr_comment in pr_comments:
-            if message in pr_comment.body:
-                notified = True
+        notified = any(message in pr_comment.body for pr_comment in pr_comments)
         logging.info(f"Docs preview was notified: {notified}")
         if not notified:
             artifact_name = f"docs-zip-{commit}"
-            use_artifact: Optional[Artifact] = None
-            for artifact in artifacts_response.artifacts:
-                if artifact.name == artifact_name:
-                    use_artifact = artifact
-                    break
+            use_artifact: Optional[Artifact] = next(
+                (
+                    artifact
+                    for artifact in artifacts_response.artifacts
+                    if artifact.name == artifact_name
+                ),
+                None,
+            )
+
             if not use_artifact:
                 logging.info("Artifact not available")
             else:

@@ -9,5 +9,5 @@ app = FastAPI()
 async def read_items(q: Optional[str] = Query(None, max_length=50)):
     results = {"items": [{"item_id": "Foo"}, {"item_id": "Bar"}]}
     if q:
-        results.update({"q": q})
+        results["q"] = q
     return results

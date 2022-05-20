@@ -38,8 +38,7 @@ def get_user(bucket: Bucket, username: str):
     result = bucket.get(doc_id, quiet=True)
     if not result.value:
         return None
-    user = UserInDB(**result.value)
-    return user
+    return UserInDB(**result.value)
 
 
 # FastAPI specific code
@@ -49,5 +48,4 @@ app = FastAPI()
 @app.get("/users/{username}", response_model=User)
 def read_user(username: str):
     bucket = get_bucket()
-    user = get_user(bucket=bucket, username=username)
-    return user
+    return get_user(bucket=bucket, username=username)
