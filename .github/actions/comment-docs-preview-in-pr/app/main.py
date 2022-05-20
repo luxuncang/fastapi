@@ -42,11 +42,15 @@ if __name__ == "__main__":
     except ValidationError as e:
         logging.error(f"Error parsing event file: {e.errors()}")
         sys.exit(0)
-    use_pr: Optional[PullRequest] = None
-    for pr in repo.get_pulls():
-        if pr.head.sha == event.workflow_run.head_commit.id:
-            use_pr = pr
-            break
+    use_pr: Optional[PullRequest] = next(
+        (
+            pr
+            for pr in repo.get_pulls()
+            if pr.head.sha == event.workflow_run.head_commit.id
+        ),
+        None,
+    )
+
     if not use_pr:
         logging.error(
             f"No PR found for hash: {event.workflow_run.head_commit.id}"

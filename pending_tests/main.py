@@ -46,7 +46,7 @@ def get_security_oauth2(sec=Security(reusable_oauth2, scopes=["read:user"])):
 @app.post("/token")
 def post_token(request_data: OAuth2PasswordRequestForm = Form(...)):
     data = request_data.parse()
-    access_token = data.username + ":" + data.password
+    access_token = f"{data.username}:{data.password}"
     return {"access_token": access_token}
 
 

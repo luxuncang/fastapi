@@ -25,7 +25,7 @@ app = FastAPI()
 
 
 def fake_hash_password(password: str):
-    return "fakehashed" + password
+    return f"fakehashed{password}"
 
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
@@ -49,10 +49,7 @@ def get_user(db, username: str):
 
 
 def fake_decode_token(token):
-    # This doesn't provide any security at all
-    # Check the next version
-    user = get_user(fake_users_db, token)
-    return user
+    return get_user(fake_users_db, token)
 
 
 async def get_current_user(token: str = Depends(oauth2_scheme)):
@@ -79,7 +76,7 @@ async def login(form_data: OAuth2PasswordRequestForm = Depends()):
         raise HTTPException(status_code=400, detail="Incorrect username or password")
     user = UserInDB(**user_dict)
     hashed_password = fake_hash_password(form_data.password)
-    if not hashed_password == user.hashed_password:
+    if hashed_password != user.hashed_password:
         raise HTTPException(status_code=400, detail="Incorrect username or password")
 
     return {"access_token": user.username, "token_type": "bearer"}
